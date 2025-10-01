@@ -84,6 +84,19 @@ services:
       - "local-stack-vnet"
       - "local-stack-private-vnet"
 
+  grafana:
+    image: "grafana/grafana:12.2"
+    restart: "always"
+    volumes:
+      - "./config/grafana/:/etc/grafana/:ro"
+    networks:
+      - "local-stack-vnet"
+      - "local-stack-private-vnet"
+    labels:
+      traefik.enable: true
+      traefik.http.routers.grafana.rule: "Host(`grafana.docker.localhost`)"
+      traefik.http.routers.grafana.entrypoints: "http"
+
 networks:
   local-stack-vnet:
     name: "local-stack-vnet"
