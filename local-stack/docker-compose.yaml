@@ -89,6 +89,7 @@ services:
     restart: "always"
     volumes:
       - "./config/grafana/:/etc/grafana/:ro"
+      - "./dashboards/:/var/grafana/dashboards/:ro"
     networks:
       - "local-stack-vnet"
       - "local-stack-private-vnet"
