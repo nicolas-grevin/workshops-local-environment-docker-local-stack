@@ -1,0 +1,4 @@
+services:
+  project_1_whoami:
+    image: "nicolasgrevin/docker-local-stack-whoami:latest"
+    hostname: "project_1_whoami"

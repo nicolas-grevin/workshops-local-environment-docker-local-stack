@@ -1,0 +1,9 @@
+---
+http:
+  routers:
+    project_1_default:
+      rule: "host(`project-1.docker.localhost`)"
+      entrypoints:
+        - http
+      priority: 1
+      service: "checkip_service"

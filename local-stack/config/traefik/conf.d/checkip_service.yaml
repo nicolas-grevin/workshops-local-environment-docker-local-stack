@@ -1,0 +1,7 @@
+---
+http:
+  services:
+    checkip_service:
+      loadBalancer:
+        servers:
+          - url: "https://checkip.amazonaws.com"

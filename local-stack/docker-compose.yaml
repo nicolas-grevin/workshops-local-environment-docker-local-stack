@@ -6,13 +6,22 @@ services:
       - "no-new-privileges:true"
     ports:
       - "80:80"
-      - "8080:8080"
     volumes:
       - "./config/traefik/:/etc/traefik/:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - "local-stack-vnet"
+    labels:
+      traefik.enable: true
+
+      traefik.http.routers.traefik-dashboard.rule: "Host(`traefik.docker.localhost`) && PathPrefix(`/`)"
+      traefik.http.routers.traefik-dashboard.entrypoints: "http"
+      traefik.http.routers.traefik-dashboard.service: "dashboard@internal"
+      traefik.http.routers.traefik-dashboard.middlewares: "dashboard_redirect@internal,dashboard_stripprefix@internal"
+
+      traefik.http.routers.traefik-api.rule: "Host(`traefik.docker.localhost`) && PathPrefix(`/api`)"
+      traefik.http.routers.traefik-api.entrypoints: "http"
+      traefik.http.routers.traefik-api.service: "api@internal"
 
 networks:
   local-stack-vnet:
-    name: "local-stack-vnet"

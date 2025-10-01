@@ -1,0 +1,8 @@
+http:
+  routers:
+    project_2_default:
+      rule: "Host(`projects.docker.localhost`) && PathPrefix(`/project-2/`)"
+      entryPoints:
+        - http
+      priority: 1
+      service: "checkip_service"
