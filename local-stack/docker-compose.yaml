@@ -58,6 +58,21 @@ services:
     networks:
       - "local-stack-private-vnet"
 
+  cadvisor:
+    image: "gcr.io/cadvisor/cadvisor:v0.52.1"
+    restart: "always"
+    privileged: true
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:ro"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker/:/var/lib/docker:ro"
+      - "/dev/disk/:/dev/disk:ro"
+    devices:
+      - "/dev/kmsg"
+    networks:
+      - "local-stack-private-vnet"
+
 networks:
   local-stack-vnet:
     name: "local-stack-vnet"
