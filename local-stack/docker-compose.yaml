@@ -23,6 +23,41 @@ services:
       traefik.http.routers.traefik-api.entrypoints: "http"
       traefik.http.routers.traefik-api.service: "api@internal"
 
+  prometheus:
+    image: "prom/prometheus:v3.6.0"
+    restart: "always"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yaml"
+      - "--storage.tsdb.path=/data"
+      - "--storage.tsdb.retention.time=7d"
+      - "--storage.tsdb.retention.size=10GB"
+      - "--web.enable-remote-write-receiver"
+    volumes:
+      - "./config/prometheus/:/etc/prometheus/:ro"
+      - "local-stack-prometheus-data:/data/"
+    networks:
+      - "local-stack-private-vnet"
+
+  loki:
+    image: "grafana/loki:3.5"
+    restart: "always"
+    volumes:
+      - "./config/loki/:/etc/loki/:ro"
+      - "local-stack-loki-data:/data/"
+    networks:
+      - "local-stack-private-vnet"
+
+  tempo:
+    image: "grafana/tempo:2.8.2"
+    restart: "always"
+    user: "root"
+    command: ["-config.file=/etc/tempo/tempo.yaml"]
+    volumes:
+      - "./config/tempo/:/etc/tempo/:ro"
+      - "local-stack-tempo-data:/data/"
+    networks:
+      - "local-stack-private-vnet"
+
 networks:
   local-stack-vnet:
     name: "local-stack-vnet"

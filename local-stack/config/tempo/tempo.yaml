@@ -1,0 +1,50 @@
+---
+server:
+  http_listen_port: 3200
+  grpc_listen_port: 9095
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"
+        http:
+          endpoint: "0.0.0.0:4318"
+
+ingester:
+  lifecycler:
+    ring:
+      replication_factor: 1
+      kvstore:
+        store: "inmemory"
+
+compactor:
+  compaction:
+    block_retention: "168h"
+
+storage:
+  trace:
+    backend: "local"
+    local:
+      path: "/data/traces"
+    wal:
+      path: "/data/wal"
+    block:
+      version: "vParquet3"
+
+query_frontend:
+  search:
+    default_result_limit: 20
+
+metrics_generator:
+  storage:
+    path: "/data/generator"
+
+overrides:
+  defaults:
+    metrics_generator:
+      processors: ["service-graphs", "span-metrics"]
+
+usage_report:
+  reporting_enabled: false
