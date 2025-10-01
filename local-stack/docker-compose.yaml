@@ -73,6 +73,17 @@ services:
     networks:
       - "local-stack-private-vnet"
 
+  alloy:
+    image: "grafana/alloy:v1.11.2"
+    restart: "always"
+    command: ["run", "/etc/alloy/config.river"]
+    volumes:
+      - "./config/alloy/:/etc/alloy/:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - "local-stack-vnet"
+      - "local-stack-private-vnet"
+
 networks:
   local-stack-vnet:
     name: "local-stack-vnet"

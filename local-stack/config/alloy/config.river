@@ -8,17 +8,17 @@ otelcol.receiver.otlp "main" {
     }
 
     output {
-        metrics = [******.input]
-        logs    = [******.input]
-        traces  = [******.input]
+        metrics = [otelcol.processor.batch.main.input]
+        logs    = [otelcol.processor.batch.main.input]
+        traces  = [otelcol.processor.batch.main.input]
     }
 }
 
 otelcol.processor.batch "main" {
     output {
-        metrics = [******.input]
-        logs    = [******.input]
-        traces  = [******.input]
+        metrics = [otelcol.exporter.prometheus.main.input]
+        logs    = [otelcol.exporter.loki.main.input]
+        traces  = [otelcol.exporter.otlp.tempo.input]
     }
 }
 
@@ -27,7 +27,7 @@ discovery.docker "main" {
 }
 
 discovery.relabel "docker_logs" {
-    targets = ******.targets
+    targets = discovery.docker.main.targets
 
     rule {
         source_labels = ["__meta_docker_container_name"]
@@ -49,22 +49,22 @@ discovery.relabel "docker_logs" {
 
 loki.source.docker "docker" {
     host          = "unix:///var/run/docker.sock"
-    targets       = ******.targets
+    targets       = discovery.docker.main.targets
     labels        = {"platform" = "docker"}
-    relabel_rules = ******.rules
-    forward_to    = [******.receiver]
+    relabel_rules = discovery.relabel.docker_logs.rules
+    forward_to    = [loki.write.main.receiver]
 }
 
 prometheus.scrape "cadvisor" {
     targets = [{
         __address__ = "cadvisor:8080",
     }]
-    forward_to = [prometheus.******.cadvisor.receiver]
+    forward_to = [prometheus.relabel.cadvisor.receiver]
     scrape_interval = "15s"
 }
 
 prometheus.relabel "cadvisor" {
-    forward_to = [prometheus.******.main.receiver]
+    forward_to = [prometheus.remote_write.main.receiver]
 
     rule {
         source_labels = ["name"]
@@ -83,7 +83,7 @@ otelcol.exporter.otlp "tempo" {
 }
 
 otelcol.exporter.loki "main" {
-    forward_to = [******.receiver]
+    forward_to = [loki.write.main.receiver]
 }
 
 loki.write "main" {
@@ -93,7 +93,7 @@ loki.write "main" {
 }
 
 otelcol.exporter.prometheus "main" {
-    forward_to = [******.receiver]
+    forward_to = [prometheus.remote_write.main.receiver]
 }
 
 prometheus.remote_write "main" {
