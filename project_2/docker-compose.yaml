@@ -2,3 +2,18 @@ services:
   project_2_whoami:
     image: "nicolasgrevin/docker-local-stack-whoami:latest"
     hostname: "project_2_whoami"
+    networks:
+      - "local-stack-vnet"
+    labels:
+      traefik.enable: true
+
+      traefik.http.middlewares.project_2_whoami_stripprefix.stripprefix.prefixes: "/project-2/,/project-2"
+
+      traefik.http.routers.project_2_whoami.entrypoints: "http"
+      traefik.http.routers.project_2_whoami.rule: "Host(`projects.docker.localhost`) && PathPrefix(`/project-2/`)" 
+      traefik.http.routers.project_2_whoami.middlewares: "project_2_whoami_stripprefix@docker"
+
+networks:
+  local-stack-vnet:
+    name: "local-stack-vnet"
+    external: true

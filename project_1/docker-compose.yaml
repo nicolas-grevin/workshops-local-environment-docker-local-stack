@@ -2,3 +2,15 @@ services:
   project_1_whoami:
     image: "nicolasgrevin/docker-local-stack-whoami:latest"
     hostname: "project_1_whoami"
+    networks:
+      - "local-stack-vnet"
+    labels:
+      traefik.enable: true
+
+      traefik.http.routers.project_1_whoami.rule: "Host(`project-1.docker.localhost`)"
+      traefik.http.routers.project_1_whoami.entrypoints: "http"
+
+networks:
+  local-stack-vnet:
+    name: "local-stack-vnet"
+    external: true

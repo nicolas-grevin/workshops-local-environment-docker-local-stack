@@ -7,6 +7,10 @@ start:
 		--detach \
 		--name $(PROJECT_NAME) \
 		--hostname $(PROJECT_NAME) \
+		--network local-stack-vnet \
+		--label "traefik.enable=true" \
+		--label "traefik.http.routers.$(PROJECT_NAME).rule=Host(\`project-3.docker.localhost\`)" \
+		--label "traefik.http.routers.$(PROJECT_NAME).entrypoints=http" \
 		nicolasgrevin/docker-local-stack-whoami:latest
 
 stop:

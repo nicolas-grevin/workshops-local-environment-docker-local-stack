@@ -25,3 +25,15 @@ services:
 
 networks:
   local-stack-vnet:
+    name: "local-stack-vnet"
+  local-stack-private-vnet:
+    name: "local-stack-private-vnet"
+    internal: true
+
+volumes:
+  local-stack-prometheus-data:
+    name: "local-stack-prometheus-data"
+  local-stack-loki-data:
+    name: "local-stack-loki-data"
+  local-stack-tempo-data:
+    name: "local-stack-tempo-data"
